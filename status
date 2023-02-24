@@ -1,0 +1,26 @@
+#!/bin/bash
+
+taskpath=tasks/$1
+
+# Task doesn't exist
+if [[ ! -f ${taskpath} ]]; then
+    echo n 
+    exit
+fi
+
+status_row=`tail -n1 ${taskpath}`
+
+case ${status_row} in
+    DTSTART:*)
+	# Task running
+        echo r
+	;;
+    END:VEVENT)
+	# Task stopped
+	echo s
+        ;;
+    *)
+	# Task error
+        echo e
+	;;
+esac

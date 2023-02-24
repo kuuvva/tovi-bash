@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# Convert timestamp produced by tzstamp to date readable input 
+# Results seconds since epoch
+date -d"${1:0:4}-${1:4:2}-${1:6:2}T${1:9:2}:${1:11:2}:${1:13:2}" +%s

@@ -1,0 +1,30 @@
+#!/bin/bash
+
+[[ -z "$1" ]] && echo "Give task name" && exit
+
+nl=\\x0D\\x0A
+taskname=$1
+timestamp=`./tzstamp`
+taskpath=tasks/$1
+
+function event_stop () {
+    echo Stopping task ${taskname}.
+    echo -e "DTEND:${timestamp}${nl}SUMMARY:${taskname}${nl}END:VEVENT" >> ${taskpath}
+}
+
+status=`./status ${taskname}`
+
+case ${status} in
+    r)
+	event_stop
+	;&
+    s)
+        echo "Task ${taskname} is stopped."
+	;;
+    n)
+	echo "Task ${taskname} doesn't exist."
+	;;
+    e)
+        echo FILE FORMAT ERROR
+	;;
+esac

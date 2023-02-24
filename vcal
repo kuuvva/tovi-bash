@@ -1,0 +1,13 @@
+nl=\\x0D\\x0A
+filename=cal.vcs
+
+echo -e "BEGIN:VCALENDAR${nl}VERSION:1.0${nl}TZ:+02:00" > ${filename}
+
+for f in tasks/*; do
+    status=`./status ${f#*/}`
+    if [[ "${status}" == "s" ]]; then
+	cat $f >> ${filename}
+    fi
+done
+
+echo "END:VCALENDAR" >> ${filename}

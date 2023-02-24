@@ -1,0 +1,39 @@
+#!/bin/bash
+nl=\\x0D\\x0A
+taskname=$1
+taskpath=tasks/$1
+timestamp=`./tzstamp`
+
+# write event start to task file
+function event_start () {
+    echo Starting task ${taskname}.
+    echo -e "BEGIN:VEVENT${nl}DTSTART:${timestamp}" >> ${taskpath}
+}
+
+if [[ ! -f ${taskpath} ]] 
+then
+    echo "Task $1 doesn't exist."
+    echo Creating a new empty task ${taskpath}
+    > ${taskpath}
+    event_start   
+fi
+
+status=`./status ${taskname}`
+
+case ${status} in
+    n)
+        echo ERROR 
+	echo "File doesn't exist ${taskpath}"
+	;;
+    r)
+        echo Task $1 is running.
+        ;;
+    s)
+        event_start
+	;;
+    *)
+	echo FILE FORMAT ERROR
+        echo Unable to interpret last line.
+        echo ${taskpath}
+        cat -n ${taskpath}
+esac
