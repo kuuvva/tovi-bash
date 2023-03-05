@@ -1,0 +1,27 @@
+#!/bin/bash
+
+print_duration () {
+    secs=$(($1%60))
+    mins=$(($1/60%60))
+    hours=$(($1/60/60))
+
+    echo $hours h $mins min $secs s
+}
+total_sec=0
+
+
+for line in `grep "DTSTART" -A1 "tasks/$1"` ; do
+    case $line in
+	DTSTART*)
+	    alku=`./tz-to-date ${line#*:}`
+	    ;;
+	DTEND*)
+	    loppu=`./tz-to-date ${line#*:}`
+	    seconds=$((loppu - alku))
+	    total_sec=$((total_sec + seconds))
+	    ;;
+
+   esac
+done
+
+print_duration $total_sec
